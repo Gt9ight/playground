@@ -1,0 +1,76 @@
+/* TodoApp.css */
+
+/* Style for categories */
+.categories {
+    margin-bottom: 20px;
+  }
+  
+  .categories button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+  }
+  
+  .categories button.active {
+    background-color: #a9a9a9;
+    color: white;
+  }
+  
+  .categories input {
+    margin-right: 10px;
+    padding: 8px;
+  }
+  
+  .categories button.create {
+    padding: 8px 16px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+  
+  /* Style for input fields */
+  input[type='text'] {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  /* Style for buttons */
+  button {
+    padding: 8px 16px;
+    margin-right: 10px;
+    border: none;
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  button.add-subtask {
+    background-color: #2196f3;
+  }
+  
+  /* Style for todo list */
+  ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  /* Style for subtasks */
+  ul.subtasks {
+    padding-left: 20px;
+  }
+  
+  .subtasks li {
+    margin-bottom: 5px;
+  }
+  
