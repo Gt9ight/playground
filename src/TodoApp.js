@@ -6,12 +6,13 @@ import { createFleetDatabase } from './utilis/Firebase';
 
 
 
+
   const TodoApp = () => {
     const [todos, setTodos] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [newCategory, setNewCategory] = useState('');
-    const [categories, setCategories] = useState(['All', 'Work', 'Personal']);
+    const [categories, setCategories] = useState([]);
     const [showSubtaskPopup, setShowSubtaskPopup] = useState(false);
     const [currentTodoIndex, setCurrentTodoIndex] = useState(null);
   
@@ -140,6 +141,8 @@ import { createFleetDatabase } from './utilis/Firebase';
         </>
       )}
       <button onClick={submitList}>submit</button>
+
+
     </div>
   );
 };

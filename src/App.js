@@ -4,7 +4,7 @@ import TodoList from "./ToDoList";
 function App() {
   return (
     <div>
-      <TodoList />
+      <TodoList/>
     </div>
   );
 }

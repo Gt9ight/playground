@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { db } from './utilis/Firebase';
 import { getDocs, collection, updateDoc, doc } from 'firebase/firestore';
-
+import './todolist.css'
 const TodoList = () => {
   const [todosFromFirestore, setTodosFromFirestore] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [showTodosForCategory, setShowTodosForCategory] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'objectives')); // 'objectives' is your Firestore collection name
+        const querySnapshot = await getDocs(collection(db, 'objectives'));
         const fetchedTodos = [];
         querySnapshot.forEach((doc) => {
           fetchedTodos.push({ id: doc.id, ...doc.data() });
@@ -22,6 +23,7 @@ const TodoList = () => {
 
     fetchData();
   }, []);
+
 
   // Function to handle marking a todo as done
   const handleTodoDone = async (todoId, isDone) => {
@@ -61,61 +63,61 @@ const TodoList = () => {
     return totalTodos > 0 ? (completedTodos / totalTodos) * 100 : 0;
   };
 
+  const toggleTodosForCategory = (category) => {
+    if (showTodosForCategory === category) {
+      setShowTodosForCategory(null);
+    } else {
+      setShowTodosForCategory(category);
+    }
+  };
+
   return (
     <div>
       <h2>Todos from Firestore - Organized by Category</h2>
-      <div>
-        {/* Category buttons */}
+      <div className="category-cards">
         {Object.keys(todosByCategory).map((category) => (
-          <button
-            key={category}
-            onClick={() => handleCategoryClick(category)}
-            className={selectedCategory === category ? 'active' : ''}
-          >
-            {category} - {getCategoryProgress(category).toFixed(2)}% Complete
-          </button>
-        ))}
-        <button onClick={() => handleCategoryClick('All')} className={selectedCategory === 'All' ? 'active' : ''}>
-          All
-        </button>
-      </div>
-      {/* Display progress bar */}
-      <div>
-        <div style={{ width: '100%', backgroundColor: '#ddd', borderRadius: '5px', marginBottom: '10px' }}>
-          <div
-            style={{
-              width: `${getCategoryProgress(selectedCategory)}%`,
-              height: '20px',
-              backgroundColor: 'green',
-              borderRadius: '5px',
-            }}
-          ></div>
-        </div>
-      </div>
-      {/* Display todos based on selected category */}
-      <ul>
-        {todosByCategory[selectedCategory]?.map((todo) => (
-          <li key={todo.id} className={todo.done ? 'done' : ''}>
-            <input
-              type="checkbox"
-              checked={todo.done || false}
-              onChange={(e) => handleTodoDone(todo.id, e.target.checked)}
-            />
-            <strong>Unit Number:</strong> {todo.text}
-            {/* Render other properties here */}
-            <ul>
-              {/* Render subtasks for each todo */}
-              {todo.subtasks && todo.subtasks.length > 0 && (
-                todo.subtasks.map((subtask, index) => (
-                  <li key={index}>
-                    <strong>Position:</strong> {subtask.position}, <strong>Specifics:</strong> {subtask.specifics}, <strong>Tread Depth:</strong> {subtask.treadDepth}
+          <div key={category} className="category-card">
+            <div
+              onClick={() => toggleTodosForCategory(category)}
+              className={`category-header ${showTodosForCategory === category ? 'active' : ''}`}
+            >
+              <h3>{category}</h3>
+              <div className="progress-bar">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${getCategoryProgress(category)}%` }}
+                ></div>
+              </div>
+              <p>{getCategoryProgress(category).toFixed(2)}% Complete</p>
+            </div>
+            {showTodosForCategory === category && (
+              <ul className="todo-list">
+                {todosByCategory[category].map((todo) => (
+                  <li key={todo.id} className={`todo-item ${todo.done ? 'done' : ''}`}>
+                    <input
+                      type="checkbox"
+                      checked={todo.done || false}
+                      onChange={(e) => handleTodoDone(todo.id, e.target.checked)}
+                    />
+                    <strong>Unit Number:</strong> {todo.text}
+                    {/* Render other properties here */}
+                    <ul>
+                      {todo.subtasks &&
+                        todo.subtasks.length > 0 &&
+                        todo.subtasks.map((subtask, index) => (
+                          <li key={index}>
+                            <strong>Position:</strong> {subtask.position}, <strong>Specifics:</strong>{' '}
+                            {subtask.specifics}, <strong>Tread Depth:</strong> {subtask.treadDepth}
+                          </li>
+                        ))}
+                    </ul>
                   </li>
-                ))
-              )}
-            </ul>
-          </li>
+                ))}
+              </ul>
+            )}
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
