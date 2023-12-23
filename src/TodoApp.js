@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './todo.css'
 import SubtaskForm from './SubtaskForm';
+import { createFleetDatabase } from './utilis/Firebase';
 
 
 
@@ -60,6 +61,13 @@ import SubtaskForm from './SubtaskForm';
     }
   };
 
+  const submitList = () => {
+    if (todos.length > 0) {
+      createFleetDatabase('objectives', todos);
+       setTodos([]);
+    }
+  };
+
   return (
     <div>
       <h1>To-Do List</h1>
@@ -114,7 +122,9 @@ import SubtaskForm from './SubtaskForm';
                 </ul>
                 <button onClick={() => handleDeleteTodo(index)}>Delete</button>
               </li>
+              
             );
+            
           }
           return null;
         })}
@@ -129,6 +139,7 @@ import SubtaskForm from './SubtaskForm';
           </div>
         </>
       )}
+      <button onClick={submitList}>submit</button>
     </div>
   );
 };
