@@ -1,50 +1,7 @@
 import React, { useState } from 'react';
 import './todo.css'
-const SubtaskPopup = ({ onClose, onSave }) => {
-  const [position, setPosition] = useState('');
-  const [specifics, setSpecifics] = useState('');
+import SubtaskForm from './SubtaskForm';
 
-  const handleSubtaskChange1 = (e) => {
-    setPosition(e.target.value);
-  };
-
-  const handleSubtaskChange2 = (e) => {
-    setSpecifics(e.target.value);
-  };
-
-  const handleSaveSubtasks = () => {
-    if (position.trim() !== '') {
-      onSave(position);
-      setPosition('');
-    }
-    if (specifics.trim() !== '') {
-      onSave(specifics);
-      setSpecifics('');
-    }
-  };
-
-  return (
-    <div className="subtask-popup">
-      <label>Position:</label>
-      <input
-        type="text"
-        value={position}
-        onChange={handleSubtaskChange1}
-        placeholder="Enter subtask 1"
-      />
-
-      <label>Specifics</label>
-      <input
-        type="text"
-        value={specifics}
-        onChange={handleSubtaskChange2}
-        placeholder="Enter subtask 2"
-      />
-      <button onClick={handleSaveSubtasks}>Add Subtasks</button>
-      <button onClick={onClose}>Close</button>
-    </div>
-  );
-};
 
 
 
@@ -74,10 +31,15 @@ const SubtaskPopup = ({ onClose, onSave }) => {
     setTodos(updatedTodos);
   };
 
-  const handleAddSubtask = (text) => {
-    if (text.trim() !== '') {
+  const handleAddSubtask = ({ position, specifics, treadDepth }) => {
+    if (position.trim() !== '' || specifics.trim() !== '' || treadDepth.trim() !== '') {
       const updatedTodos = [...todos];
-      updatedTodos[currentTodoIndex].subtasks.push(text);
+      const subtask = {
+        position: position.trim(),
+        specifics: specifics.trim(),
+        treadDepth: treadDepth.trim(),
+      };
+      updatedTodos[currentTodoIndex].subtasks.push(subtask);
       setTodos(updatedTodos);
     }
     setShowSubtaskPopup(false);
@@ -119,6 +81,7 @@ const SubtaskPopup = ({ onClose, onSave }) => {
         />
         <button onClick={handleCreateCategory}>Create</button>
       </div>
+      <h2>Customer: {selectedCategory}</h2>
       <input
         type="text"
         value={inputValue}
@@ -131,8 +94,8 @@ const SubtaskPopup = ({ onClose, onSave }) => {
         {todos.map((todo, index) => {
           if (selectedCategory === 'All' || todo.category === selectedCategory) {
             return (
-              <li key={index}>
-                {todo.text}
+              <li key={index} className='todo-card'>
+                <strong>Unit Number:</strong>{todo.text}
                 <button
                   onClick={() => {
                     setCurrentTodoIndex(index);
@@ -145,7 +108,7 @@ const SubtaskPopup = ({ onClose, onSave }) => {
                   {/* Rendering subtasks and labeling them */}
                   {todo.subtasks.map((subtask, subIndex) => (
                     <li key={subIndex}>
-                      {subIndex % 2 === 0 ? <strong>Position:</strong> : <strong>Specifics:</strong>} {subtask}
+                      <strong>Position:</strong> {subtask.position}, <strong>Specifics:</strong> {subtask.specifics}, <strong>Tread Depth:</strong> {subtask.treadDepth}
                     </li>
                   ))}
                 </ul>
@@ -159,7 +122,12 @@ const SubtaskPopup = ({ onClose, onSave }) => {
 
       {/* Render SubtaskPopup when showSubtaskPopup state is true */}
       {showSubtaskPopup && (
-        <SubtaskPopup onClose={() => setShowSubtaskPopup(false)} onSave={handleAddSubtask} />
+        <>
+          <div className="overlay" onClick={() => setShowSubtaskPopup(false)} />
+          <div className="subtask-popup">
+            <SubtaskForm onClose={() => setShowSubtaskPopup(false)} onSave={handleAddSubtask} />
+          </div>
+        </>
       )}
     </div>
   );
